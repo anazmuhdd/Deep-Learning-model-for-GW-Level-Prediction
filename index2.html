@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WaterGo - Pump Prediction</title>
+  <link rel="stylesheet" href="Public/css/styles2.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="Public/js/index.js" defer></script>
+</head>
+<body class="min-h-screen flex">
+
+  <!-- Sidebar Navigation -->
+  <aside class="w-64 p-6 text-white flex flex-col">
+    <h1 class="text-2xl font-bold mb-8">WaterGo</h1>
+    <nav class="flex-1">
+      <ul>
+        <li class="mb-4">
+          <a href="/prediction" class="block px-4 py-2 rounded hover:bg-blue-600">Pump Demand</a>
+        </li>
+        <li>
+          <a href="#" class="block px-4 py-2 rounded hover:bg-blue-600">Groundwater</a>
+        </li>
+      </ul>
+    </nav>
+    <footer class="mt-auto text-sm">
+      &copy; 2025 WaterGo
+    </footer>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col items-center min-h-screen p-6">
+
+    <section class="top-intro">
+      <h1 class="text-2xl font-bold mb-4 text-black">Ground Water Level Predictor and Ground Water Pump Demand</h1>
+      <p class="text-lg text-black/90">
+        Early Predictor and Warning System designed for Coimnatore
+      </p>
+    </section>
+
+    <div class="w-full flex flex-col flex-grow mt-10">
+      <section class="glass shadow-lg flex-grow">
+        <h2 class="text-2xl font-bold mb-4 text-center text-white">Pump Prediction Data</h2>
+    
+        <!-- Date Filter -->
+        <div class="mb-4">
+          <label for="filterDate" class="block text-white font-semibold mb-2">Select Date to Filter by Month:</label>
+          <input type="date" id="filterDate" class="w-full p-2 rounded text-black" />
+        </div>
+    
+        <!-- Table Container -->
+        <div class="data-table-container overflow-x-auto max-h-[300px] overflow-y-auto">
+          <table class="w-full text-white text-left border border-white/20 rounded-lg">
+            <thead class="bg-white/20 sticky top-0 backdrop-blur">
+              <tr>
+                <th class="px-4 py-2">Date</th>
+                <th class="px-4 py-2">Rainfall (mm)</th>
+                <th class="px-4 py-2">Temperature (°C)</th>
+                <th class="px-4 py-2">Predicted Groundwater (m)</th>
+                <th class="px-4 py-2">Actual Groundwater (m) from Sensors</th>
+                <th class="px-4 py-2">Warning</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="bg-white/10">
+              <!-- JavaScript will populate this -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    
+  </main>
+</body>
+</html>

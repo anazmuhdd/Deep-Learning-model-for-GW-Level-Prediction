@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Water Pump Prediction</title>
+  <link rel="stylesheet" href="Public/css/style_pred.css" />
+</head>
+<body>
+  <div class="overlay">
+    <header class="header">
+      <h2 class="main-title">Water Pump Prediction</h2>
+      <input type="text" class="search-input" placeholder="Search year, rainfall, or population..." />
+    </header>
+    <button class="back-button" onclick="window.location.href='index2.html';">Back</button>
+
+    <main class="main-content">
+      <table class="prediction-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Pump Sets</th>
+            <th>Population</th>
+            <th>Rainfall (mm)</th>
+            <th>Predicted Demand</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Table rows will be filled by JavaScript -->
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script src="Public/js/prediction.js"></script>
+</body>
+</html>
