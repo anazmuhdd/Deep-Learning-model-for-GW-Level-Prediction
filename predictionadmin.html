@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Pump Demand Prediction System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url("https://www.daepumps.com/images/Flow-Rates-and-Pressure-Specifications.jpg") no-repeat center center fixed;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .overlay {
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    .navbar {
+      border-bottom: 2px solid #444;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+    }
+
+    .card {
+      border-radius: 1.25rem;
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .logout-btn {
+      color: white;
+      background-color: #dc3545;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    .btn {
+      font-weight: 500;
+    }
+
+    h2 {
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+      <a class="navbar-brand" href="#">Pump Demand Admin</a>
+      <div class="ms-auto">
+        <button class="btn logout-btn">Logout</button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+      <h2 class="text-center mb-5 text-dark"></h2>
+
+      <div class="row g-4 justify-content-center">
+
+        <!-- Pump Demand Prediction Form -->
+        <div class="col-md-5">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3 text-primary">Predict Pump Demand</h5>
+            <form id="predictionForm">
+              <div class="mb-3">
+                <label for="predictDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="predictDate" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Predict Pump Demand</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Update Cumulative Pump Sets Form -->
+        <div class="col-md-5">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3 text-success">Update Cumulative Pump Sets</h5>
+            <form id="cumulativeForm">
+              <div class="mb-3">
+                <label for="cumulativeDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="cumulativeDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="cumulativePumpSets" class="form-label">Cumulative Pump Sets</label>
+                <input type="number" class="form-control" id="cumulativePumpSets" step="1" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Update Cumulative Pump Sets</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="messageModalBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showModal(message, type = 'info') {
+      const modalBody = document.getElementById("messageModalBody");
+      modalBody.innerHTML = `<div class="alert alert-${type} m-0">${message}</div>`;
+      const modal = new bootstrap.Modal(document.getElementById("messageModal"));
+      modal.show();
+      setTimeout(() => {
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById("messageModal"));
+        if (modalInstance) modalInstance.hide();
+      }, 4000);
+    }
+
+    // Dummy Data for Pump Demand Prediction
+    document.getElementById("predictionForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const date = document.getElementById("predictDate").value;
+
+      // Simulate a pump demand prediction
+      const prediction = (Math.random() * 100).toFixed(2); // Dummy prediction value
+      const message = `For <strong>${date}</strong>, the predicted pump demand is <strong>${prediction} units</strong>.`;
+
+      showModal(message, 'success');
+    });
+
+    // Dummy Data for Cumulative Pump Sets Update
+    document.getElementById("cumulativeForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const date = document.getElementById("cumulativeDate").value;
+      const cumulativePumpSets = document.getElementById("cumulativePumpSets").value;
+
+      // Simulate a pump set update
+      const message = `The cumulative pump sets for <strong>${date}</strong> have been updated to <strong>${cumulativePumpSets}</strong> units.`;
+
+      showModal(message, 'success');
+    });
+
+    // Logout Button
+    document.querySelector(".logout-btn").addEventListener("click", () => {
+      window.location.href = "/admin";
+      alert("Logged out successfully!");
+    });
+  </script>
+</body>
+
+</html>

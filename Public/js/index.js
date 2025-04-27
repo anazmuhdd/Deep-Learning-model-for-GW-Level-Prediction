@@ -12,8 +12,8 @@ function renderTable(data) {
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "";
 
-  // Set threshold (e.g., if groundwater level is below 10.0 m, it's low)
   const threshold = 7.5;
+  const lowGroundwaterAlerts = [];
 
   if (!Array.isArray(data) || data.length === 0) {
     tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-gray-500">No data available for selected month</td></tr>`;
@@ -21,7 +21,25 @@ function renderTable(data) {
   }
 
   data.forEach(entry => {
-    let warning = (entry.groundwaterLevel < threshold) ? "Low Groundwater" : "OK";
+    let isLow = false;
+    let warning = "OK";
+
+    // Check priority: actual groundwaterLevel > predictedGroundwaterLevel
+    if (entry.groundwaterLevel !== undefined && entry.groundwaterLevel !== null) {
+      isLow = entry.groundwaterLevel < threshold;
+    } else if (entry.predictedGroundwaterLevel !== undefined && entry.predictedGroundwaterLevel !== null) {
+      isLow = entry.predictedGroundwaterLevel < threshold;
+    }
+
+    if (isLow) {
+      warning = "⚠️ Low Groundwater";
+      lowGroundwaterAlerts.push({
+        date: entry.date,
+        groundwaterLevel: entry.groundwaterLevel,
+        predictedGroundwaterLevel: entry.predictedGroundwaterLevel
+      });
+    }
+
     const row = `<tr>
       <td class="px-4 py-2">${entry.date || 'N/A'}</td>
       <td class="px-4 py-2">${entry.rainfall ?? 'N/A'}</td>
@@ -32,6 +50,21 @@ function renderTable(data) {
     </tr>`;
     tableBody.insertAdjacentHTML("beforeend", row);
   });
+
+  // ✅ Send email if warnings found
+  if (lowGroundwaterAlerts.length > 0) {
+    fetch("/api/email/send-warning-emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ alerts: lowGroundwaterAlerts })
+    })
+    .then(res => res.json())
+    .then(resp => {
+      console.log("📧 Email Alert Sent:", resp);
+      alert("🚨 Warning email sent to government authorities for low groundwater levels!");
+    })
+    .catch(err => console.error("❌ Email sending failed:", err));
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fetch and render current month’s data
   fetchDataByMonth(defaultFormatted);
 
-  // Event listener for filtering
+  // Filter by selected month
   document.getElementById("filterDate").addEventListener("change", e => {
     const selectedDate = new Date(e.target.value);
     const year = selectedDate.getFullYear();

@@ -1,137 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard - Groundwater System</title>
+  <title>Admin Dashboard - Groundwater Prediction System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url("https://www.daepumps.com/images/Flow-Rates-and-Pressure-Specifications.jpg") no-repeat center center fixed;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .overlay {
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    .navbar {
+      border-bottom: 2px solid #444;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+    }
+
+    .card {
+      border-radius: 1.25rem;
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .logout-btn {
+      color: white;
+      background-color: #dc3545;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    .btn {
+      font-weight: 500;
+    }
+
+    h2 {
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+  </style>
 </head>
-<body class="bg-light">
-  <div class="container py-5">
-    <h2 class="text-center mb-5">🌊 Groundwater Prediction Admin Panel</h2>
 
-    <div class="row g-4">
+<body>
+  <div class="overlay">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+      <a class="navbar-brand" href="#">WaterGo Admin</a>
+      <div class="ms-auto">
+        <button class="btn logout-btn">Logout</button>
+      </div>
+    </nav>
 
-      <!-- Climate Data Form -->
-      <div class="col-md-6">
-        <div class="card p-4 shadow-lg rounded-4">
-          <h5 class="mb-3">🌧️ Add Rainfall & Climate Data</h5>
-          <form id="climateForm">
-            <div class="mb-3">
-              <label for="climateDate" class="form-label">Date</label>
-              <input type="date" class="form-control" id="climateDate" required>
-            </div>
-            <div class="mb-3">
-              <label for="rainfall" class="form-label">Rainfall (mm)</label>
-              <input type="number" class="form-control" id="rainfall" step="0.01" required>
-            </div>
-            <div class="mb-3">
-              <label for="temperature" class="form-label">Temperature (°C)</label>
-              <input type="number" class="form-control" id="temperature" step="0.01" required>
-            </div>
-            <button type="submit" class="btn btn-success w-100">Submit Climate Data</button>
-          </form>
-          <div id="climateResult" class="mt-3"></div>
+    <!-- Main Content -->
+    <div class="container py-5">
+      <h2 class="text-center mb-5 text-dark"></h2>
+
+      <div class="row g-4 justify-content-center">
+
+        <!-- Climate Data Form -->
+        <div class="col-md-5">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3 text-primary">Add Rainfall & Climate Data</h5>
+            <form id="climateForm">
+              <div class="mb-3">
+                <label for="climateDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="climateDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="rainfall" class="form-label">Rainfall (mm)</label>
+                <input type="number" class="form-control" id="rainfall" step="0.01" required>
+              </div>
+              <div class="mb-3">
+                <label for="temperature" class="form-label">Temperature (°C)</label>
+                <input type="number" class="form-control" id="temperature" step="0.01" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Submit Climate Data</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Feature Engineering Form -->
+        <div class="col-md-5">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3 text-warning">Feature Engineering for a Day</h5>
+            <form id="featureForm">
+              <div class="mb-3">
+                <label for="featureDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="featureDate" required>
+              </div>
+              <button type="submit" class="btn btn-warning w-100">Generate Features</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Prediction Form -->
+        <div class="col-md-5">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3 text-primary">Predict Groundwater Level</h5>
+            <form id="predictionForm">
+              <div class="mb-3">
+                <label for="predictDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="predictDate" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Predict & Store</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Update Groundwater Level Form -->
+        <div class="col-md-5">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3 text-success">Update Groundwater Level from Sensors</h5>
+            <form id="groundwaterForm">
+              <div class="mb-3">
+                <label for="gwDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="gwDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="groundwaterLevel" class="form-label">Groundwater Level (m)</label>
+                <input type="number" class="form-control" id="groundwaterLevel" step="0.01" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Update Groundwater Level</button>
+            </form>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Prediction Form -->
-      <div class="col-md-6">
-        <div class="card p-4 shadow-lg rounded-4">
-          <h5 class="mb-3">🤖 Predict Groundwater Level</h5>
-          <form id="predictionForm">
-            <div class="mb-3">
-              <label for="predictDate" class="form-label">Date</label>
-              <input type="date" class="form-control" id="predictDate" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Predict & Store</button>
-          </form>
-          <div id="predictionResult" class="mt-3"></div>
+    <!-- Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="messageModalBody"></div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Climate data submission
+    function showModal(message, type = 'info') {
+      const modalBody = document.getElementById("messageModalBody");
+      modalBody.innerHTML = `<div class="alert alert-${type} m-0">${message}</div>`;
+      const modal = new bootstrap.Modal(document.getElementById("messageModal"));
+      modal.show();
+      setTimeout(() => {
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById("messageModal"));
+        if (modalInstance) modalInstance.hide();
+      }, 4000);
+    }
+
+    // Submit Climate Data
     document.getElementById("climateForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-  
       const date = document.getElementById("climateDate").value;
       const rainfall = parseFloat(document.getElementById("rainfall").value);
       const temperature = parseFloat(document.getElementById("temperature").value);
-  
-      const climateEntry = {
-        date: date,
-        rainfall: rainfall,
-        temperature: temperature,
-        source: "admin-panel"
-      };
-  
+
       try {
         const res = await fetch("/api/predictions/admin/climate", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(climateEntry)
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ date, rainfall, temperature, source: "admin-panel" })
         });
-  
         const data = await res.json();
-        document.getElementById("climateResult").innerHTML = `
-          <div class="alert alert-success">
-            ✅ ${data.message} for <strong>${date}</strong>.
-          </div>
-        `;
-      } catch (err) {
-        document.getElementById("climateResult").innerHTML = `
-          <div class="alert alert-danger">
-            ❌ Failed to save climate data.
-          </div>
-        `;
+        showModal(data.message ? `${data.message} for <strong>${date}</strong>.` : data.error, data.error ? 'danger' : 'success');
+      } catch {
+        showModal("Failed to save climate data. Please try again.", "danger");
       }
     });
-  
-    // Prediction submission
-    document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("predictionForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
 
-    const date = document.getElementById("predictDate").value;
-    const predictedValue = 10.41;
+    // Submit Feature Engineering Data
+    document.getElementById("featureForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const date = document.getElementById("featureDate").value;
 
-    const predictionEntry = {
-      date: date,
-      predictedGroundwaterLevel: parseFloat(predictedValue),
-      source: "model"
-    };
+      try {
+        const res = await fetch("http://localhost:8000/api/feature-engineer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target_date: date })
+        });
+        const data = await res.json();
+        showModal(data.error ? data.error : `
+          Feature Engineering Completed for <strong>${data.target_date}</strong><br/>
+          ${data.status}
+        `, data.error ? "danger" : "success");
+      } catch {
+        showModal("Feature engineering failed. Check server or network connection.", "danger");
+      }
+    });
 
-    try {
-      const res = await fetch("/api/predictions/admin/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(predictionEntry)
-      });
+    // Submit Prediction Data
+    document.getElementById("predictionForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const date = document.getElementById("predictDate").value;
 
-      const data = await res.json();
-      document.getElementById("predictionResult").innerHTML = `
-        <div class="alert alert-info">
-          📅 <strong>${date}</strong> → Predicted GW Level: <strong>${predictedValue} m</strong> <br/>
-          ✅ ${data.message}
-        </div>
-      `;
-    } catch (err) {
-      document.getElementById("predictionResult").innerHTML = `
-        <div class="alert alert-danger">
-          ❌ Prediction failed to save.
-        </div>
-      `;
-    }
-  });
-});
+      try {
+        const res = await fetch("http://localhost:8000/api/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target_date: date })
+        });
+        const data = await res.json();
+        showModal(data.error ? data.error : `
+          <strong>${data.target_date}</strong> → Predicted GW Level:
+          <strong>${data.predicted_groundwater_level.toFixed(2)} m</strong><br/>
+          ${data.status}
+        `, data.error ? "danger" : "success");
+      } catch {
+        showModal("Prediction failed. Check server or network connection.", "danger");
+      }
+    });
+
+    // Submit Groundwater Level Data
+    document.getElementById("groundwaterForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const date = document.getElementById("gwDate").value;
+      const groundwaterLevel = parseFloat(document.getElementById("groundwaterLevel").value);
+
+      try {
+        const res = await fetch("/api/predictions/admin/groundwater", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ date, groundwater_level: groundwaterLevel })
+        });
+        const data = await res.json();
+        showModal(data.message ? `${data.message} for <strong>${date}</strong>.` : data.error, data.error ? 'danger' : 'success');
+      } catch {
+        showModal("Failed to update groundwater level. Please try again.", "danger");
+      }
+    });
+
+    document.querySelector(".logout-btn").addEventListener("click", () => {
+      window.location.href = "/admin";
+      alert("Logged out successfully!");
+    });
   </script>
-  
 </body>
+
 </html>

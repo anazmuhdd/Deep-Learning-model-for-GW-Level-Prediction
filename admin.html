@@ -9,14 +9,11 @@
 <body class="bg-blue-50 h-screen flex items-center justify-center">
   <div class="bg-white p-8 rounded-2xl shadow-md w-[400px]">
     <!-- Logo Section -->
-    <!-- Website Title -->
     <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">WaterGo</h1>
 
-    
-    
-    <h2 class="text-2xl font-bold text-center mb-6 text-blue-700" id="formTitle">Registration</h2>
+    <h2 class="text-2xl font-bold text-center mb-6 text-blue-700" id="formTitle">Login</h2>
 
-    <!-- Registration/Login Form -->
+    <!-- Login Form -->
     <form id="authForm">
       <div class="mb-4">
         <label class="block text-gray-700">Username</label>
@@ -26,69 +23,41 @@
         <label class="block text-gray-700">Password</label>
         <input type="password" id="password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required />
       </div>
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700" id="authBtn">Register</button>
+
+      <!-- Listbox to select the administrator page -->
+      <div class="mb-4">
+        <label class="block text-gray-700">Select Admin Page</label>
+        <select id="adminPage" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="/adminwaterlevel">Groundwater Administrator</option>
+          <option value="/adminpump">Pump Demand Administrator</option>
+        </select>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700" id="authBtn">Login</button>
     </form>
 
-    <p id="authError" class="text-red-500 text-sm mt-4 hidden text-center">Error message</p>
+    <p id="authError" class="text-red-500 text-sm mt-4 hidden text-center">Invalid username or password.</p>
 
-    <!-- Switch between Register and Login -->
-    <p class="text-center mt-4 text-sm">
-      <span id="switchText">Already have an account?</span>
-      <button class="text-blue-600 underline" id="switchMode">Login</button>
-    </p>
   </div>
 
   <script>
-    let isRegistering = true; // Toggle between registration and login
-
-    const formTitle = document.getElementById("formTitle");
-    const authBtn = document.getElementById("authBtn");
-    const switchMode = document.getElementById("switchMode");
-    const switchText = document.getElementById("switchText");
-    const authError = document.getElementById("authError");
-
-    switchMode.addEventListener("click", () => {
-      isRegistering = !isRegistering;
-      formTitle.textContent = isRegistering ? "Register" : "Login";
-      authBtn.textContent = isRegistering ? "Register" : "Login";
-      switchText.textContent = isRegistering ? "Already have an account?" : "Don't have an account?";
-      switchMode.textContent = isRegistering ? "Login" : "Register";
-      authError.classList.add("hidden");
-    });
+    // Predefined login details (example)
+    const validUsername = "admin";
+    const validPassword = "password123"; // Change this to match your login credentials
 
     document.getElementById("authForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
+      const adminPage = document.getElementById("adminPage").value;
 
-      if (isRegistering) {
-        // Save to localStorage (mock database)
-        localStorage.setItem("adminUser", username);
-        localStorage.setItem("adminPass", password);
-
-        authError.textContent = "Registration successful! Please login.";
-        authError.classList.remove("hidden");
-        authError.classList.remove("text-red-500");
-        authError.classList.add("text-green-600");
-
-        // Switch to login mode after registration
-        setTimeout(() => {
-          switchMode.click();
-        }, 1500);
-
+      // Validate login details
+      if (username === validUsername && password === validPassword) {
+        window.location.href = adminPage; // Redirect to selected admin page
       } else {
-        // Login validation
-        const savedUser = localStorage.getItem("adminUser");
-        const savedPass = localStorage.getItem("adminPass");
-
-        if (username === savedUser && password === savedPass) {
-          window.location.href = "index.html"; // Redirect to main dashboard
-        } else {
-          authError.textContent = "Invalid username or password.";
-          authError.classList.remove("hidden");
-          authError.classList.add("text-red-500");
-        }
+        const authError = document.getElementById("authError");
+        authError.classList.remove("hidden");
       }
     });
   </script>

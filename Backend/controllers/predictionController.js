@@ -82,6 +82,37 @@ const addOrUpdateClimate = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+// POST: Update Groundwater Level (from sensors)
+const updateGroundwaterLevel = async (req, res) => {
+  try {
+    const { date, groundwater_level } = req.body;
+
+    // 🔍 Use standardized ISO format and remove time portion
+    const parsedDate = new Date(new Date(date).toISOString().split('T')[0]);
+
+    // ✅ Check if a prediction already exists for the given date
+    let existing = await Prediction.findOne({ date: parsedDate });
+
+    if (existing) {
+      // ✏️ Update existing groundwater level
+      existing.groundwaterLevel = groundwater_level;
+      await existing.save();
+      return res.status(200).json({ message: '✅ Groundwater level updated' });
+    } else {
+      // ➕ Create new entry
+      const newEntry = new Prediction({
+        date: parsedDate,
+        groundwaterLevel: groundwater_level,
+        source: "sensor-data"
+      });
+      await newEntry.save();
+      return res.status(201).json({ message: '✅ Groundwater level added' });
+    }
+  } catch (err) {
+    console.error('❌ Error in updateGroundwaterLevel:', err.message);
+    res.status(400).json({ error: err.message });
+  }
+};
 
 // POST: Add or update prediction result
 const addOrUpdatePrediction = async (req, res) => {
@@ -120,5 +151,6 @@ module.exports = {
   getAllPredictions,
   getPredictionsByMonth,
   addOrUpdateClimate,
-  addOrUpdatePrediction
+  addOrUpdatePrediction,
+  updateGroundwaterLevel
 };

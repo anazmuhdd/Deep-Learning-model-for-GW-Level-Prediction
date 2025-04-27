@@ -4,7 +4,8 @@ const {
   getAllPredictions,
   getPredictionsByMonth,
   addOrUpdateClimate,
-  addOrUpdatePrediction
+  addOrUpdatePrediction,
+  updateGroundwaterLevel
 } = require('../controllers/predictionController');
 
 // Get all predictions
@@ -15,7 +16,7 @@ router.get('/:month', getPredictionsByMonth);
 
 // Add or update climate data
 router.post('/admin/climate', addOrUpdateClimate);
-
+router.post('/admin/groundwater',updateGroundwaterLevel);
 // Add or update prediction
 router.post('/admin/predict', addOrUpdatePrediction);
 
